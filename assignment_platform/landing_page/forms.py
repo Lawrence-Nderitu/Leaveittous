@@ -19,15 +19,15 @@ class UserRegistrationForm(UserCreationForm):
     # UserCreationForm provides new_password1 and new_password2.
     # We override them to add custom styling.
     new_password1 = forms.CharField(
-        label="Password",
-        widget=forms.PasswordInput(attrs={'class': 'mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'}),
-        strip=False,
-        help_text=UserCreationForm.password_help_text, # Use Django's default help text
+        label="Password", # Django will provide a default label if not specified here.
+        widget=forms.PasswordInput(attrs={'class': 'mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm', 'autocomplete': 'new-password'}),
+        strip=False
+        # help_text is removed; Django's default will be used.
     )
     new_password2 = forms.CharField(
-        label="Password confirmation",
+        label="Password confirmation", # Django will provide a default label.
         strip=False,
-        widget=forms.PasswordInput(attrs={'class': 'mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'}),
+        widget=forms.PasswordInput(attrs={'class': 'mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm', 'autocomplete': 'new-password'}),
     )
 
     class Meta(UserCreationForm.Meta):
