@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Platform</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'landing_page/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Assignment Platform</h1>
+        <nav>
+            {% if user.is_authenticated %}
+                <p>Hello, {{ user.username }}! (<a href="{% url 'logout' %}">Logout</a>)</p>
+            {% else %}
+                <a href="{% url 'register' %}"><button>Sign Up</button></a>
+                <a href="{% url 'login' %}"><button>Log In</button></a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <section id="description">
+            <p>Post your assignments and get help from qualified writers. Our platform connects students with expert tutors and writers to help them succeed in their academic goals.</p>
+        </section>
+        <section id="cta">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'register' %}"><button>Sign Up</button></a>
+                <a href="{% url 'login' %}"><button>Log In</button></a>
+            {% else %}
+                <!-- Add links to user-specific actions here later, e.g., dashboard -->
+                <p>Explore your dashboard or post a new assignment!</p>
+            {% endif %}
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Assignment Platform</p>
+    </footer>
+</body>
+</html>
