@@ -3,18 +3,26 @@ from .models import Assignment, Bid
 
 @admin.register(Assignment) # Use decorator for registration
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ('title', 'student', 'writer', 'status', 'deadline', 'budget', 'submitted_at')
-    list_filter = ('status', 'deadline', 'student', 'writer', 'subject') # Added subject here
-    search_fields = ('title', 'description', 'student__username', 'writer__username')
-    readonly_fields = ('created_at', 'updated_at', 'submitted_at') # submitted_at is set by logic
+    list_display = ('title', 'student', 'writer', 'status', 'deadline', 'budget', 'submitted_at', 'rating', 'created_at') # Added created_at
+    list_filter = ('status', 'deadline', 'student', 'writer', 'subject', 'rating') # subject was already there
+    search_fields = ('title', 'description', 'student__username', 'writer__username', 'subject') # Added subject
+    readonly_fields = ('created_at', 'updated_at', 'submitted_at') # created_at, updated_at already here
 
     fieldsets = (
         (None, {'fields': ('title', 'description', 'subject', 'student')}),
+        ('Requirement Files', { # New fieldset for requirement files
+            'fields': ('requirement_file_1', 'requirement_file_2'),
+            'classes': ('collapse',), # Optional: make it collapsible
+        }),
         ('Assignment Details', {'fields': ('budget', 'deadline')}),
         ('Assignment State', {'fields': ('status', 'writer')}),
         ('Submission Details', {'fields': ('submitted_work', 'submission_notes', 'submitted_at')}),
+        ('Student Review', {'fields': ('rating', 'review_comments')}),
+        ('Timestamps', { # Added Timestamps fieldset
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
     )
-    # raw_id_fields can be useful for student and writer if user list is very long
     raw_id_fields = ('student', 'writer')
 
 

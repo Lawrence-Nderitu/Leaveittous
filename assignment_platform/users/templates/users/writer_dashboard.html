@@ -10,9 +10,10 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <a href="{% url 'assignments:browse_open_assignments' %}" class="col-span-1 md:col-span-1 bg-emerald-500 hover:bg-emerald-600 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex flex-col items-center justify-center text-center">
-            <h2 class="text-xl font-semibold mb-2">Browse Open Assignments</h2>
-            <p class="text-sm text-emerald-100">Find new opportunities and place your bids.</p>
+        <a href="{% url 'assignments:browse_open_assignments' %}" class="col-span-1 md:col-span-1 bg-emerald-500 hover:bg-emerald-600 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex flex-col items-center justify-center text-center space-y-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <h2 class="text-xl font-semibold">Browse Open Assignments</h2>
+            <p class="text-sm text-emerald-100">Find new opportunities.</p>
         </a>
         <div class="col-span-1 md:col-span-1 bg-blue-500 text-white p-6 rounded-lg shadow-lg flex flex-col items-center justify-center text-center">
             <h2 class="text-xl font-semibold mb-2">My Active Bids</h2>
@@ -46,11 +47,15 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ assignment.deadline|date:"F d, Y, H:i" }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 {% if assignment.status == 'assigned' %}
-                                    <a href="{% url 'assignments:submit_assignment' assignment_id=assignment.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded text-sm shadow hover:shadow-md transition-all">
-                                        Submit Work
+                                    <a href="{% url 'assignments:submit_assignment' assignment_id=assignment.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded text-sm shadow hover:shadow-md transition-all inline-flex items-center space-x-1.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" /></svg>
+                                        <span>Submit Work</span>
                                     </a>
                                 {% elif assignment.status == 'submitted' %}
-                                    <span class="text-green-600 font-semibold">Work Submitted</span>
+                                    <span class="text-green-600 font-semibold inline-flex items-center space-x-1.5">
+                                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                       <span>Work Submitted</span>
+                                    </span>
                                     <p class="text-xs text-gray-500">On: {{ assignment.submitted_at|date:"M d, Y H:i" }}</p>
                                 {% else %}
                                     <span class="text-gray-500">{{ assignment.get_status_display }}</span>
@@ -92,7 +97,10 @@
                         {% for bid in my_bids %}
                         <tr class="hover:bg-emerald-50 transition-colors duration-150">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{% url 'assignments:assignment_detail_writer' assignment_id=bid.assignment.id %}" class="text-emerald-600 hover:text-emerald-800 hover:underline font-semibold">{{ bid.assignment.title }}</a>
+                                <a href="{% url 'assignments:assignment_detail_writer' assignment_id=bid.assignment.id %}" class="text-emerald-600 hover:text-emerald-800 hover:underline font-semibold inline-flex items-center space-x-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    <span>{{ bid.assignment.title }}</span>
+                                </a>
                                 <p class="text-xs text-gray-500">Budget: ${{ bid.assignment.budget }} | Deadline: {{ bid.assignment.deadline|date:"M d, Y" }}</p>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-emerald-600 font-semibold">${{ bid.amount }}</td>

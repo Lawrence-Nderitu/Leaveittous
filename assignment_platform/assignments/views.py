@@ -27,18 +27,21 @@ def create_assignment_view(request):
             assignment.student = request.user
             assignment.status = 'open' # Default status
             assignment.save()
-            messages.success(request, 'Your assignment has been posted successfully!')
-            return redirect('users:student_dashboard') # Assuming student_dashboard is the correct redirect
+            messages.success(request, f"Assignment '{assignment.title}' created successfully.") # Updated success message
+            return redirect('users:student_dashboard')
         else:
-            # Add error messages if form is invalid
+            # Keep existing detailed error messages
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"Error in {field}: {error}")
-            # Fall through to render form with errors
     else:
         form = AssignmentCreateForm()
 
-    return render(request, 'assignments/create_assignment.html', {'form': form})
+    context = {
+        'form': form,
+        'page_title': 'Post New Assignment'
+    }
+    return render(request, 'assignments/create_assignment.html', context)
 
 @login_required
 @user_passes_test(is_student_user, login_url='/users/login/')
@@ -191,3 +194,27 @@ def mark_assignment_complete_view(request, assignment_id):
         # If accessed via GET, just redirect back, as this action should be via POST from a button.
         messages.info(request, "Please use the button on the assignment detail page to mark it as complete.")
         return redirect('assignments:assignment_detail_student', assignment_id=assignment.id)
+
+# Admin views for assignments
+@login_required
+@user_passes_test(lambda u: u.is_staff or (hasattr(u, 'user_type') and u.user_type == 'admin'))
+def admin_list_assignments_view(request):
+    assignments = Assignment.objects.select_related('student', 'writer').all().order_by('-created_at')
+    context = {
+        'assignments': assignments,
+        'page_title': 'Manage Assignments'
+    }
+    return render(request, 'assignments/admin_list_assignments.html', context)
+
+@login_required
+@user_passes_test(lambda u: u.is_staff or (hasattr(u, 'user_type') and u.user_type == 'admin'))
+def admin_assignment_detail_view(request, assignment_id):
+    assignment = get_object_or_404(Assignment.objects.select_related('student', 'writer'), id=assignment_id)
+    bids = Bid.objects.filter(assignment=assignment).select_related('writer').order_by('-created_at')
+
+    context = {
+        'assignment': assignment,
+        'bids': bids,
+        'page_title': f"Details for Assignment: {assignment.title[:30]}..." if len(assignment.title) > 33 else f"Details for Assignment: {assignment.title}"
+    }
+    return render(request, 'assignments/admin_assignment_detail.html', context)

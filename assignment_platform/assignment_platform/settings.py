@@ -132,7 +132,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_REDIRECT_URL = '/' # Default redirect after login if not handled by view
+LOGIN_URL = '/login/student/' # Default login URL for @login_required
+LOGIN_REDIRECT_URL = '/' # Default redirect after login if not handled by view or next param
 LOGOUT_REDIRECT_URL = '/' # Default redirect after logout
 
 # Media files (uploads)

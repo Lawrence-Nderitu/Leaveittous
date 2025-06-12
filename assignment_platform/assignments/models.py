@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
-from django.urls import reverse # Add this import
+from django.urls import reverse
+from django.core.validators import MinValueValidator, MaxValueValidator # For rating
 
 # It's good practice to directly reference settings.AUTH_USER_MODEL
 # for ForeignKey relationships to the User model, especially if the User model
@@ -58,6 +59,32 @@ class Assignment(models.Model):
     submitted_at = models.DateTimeField(
         null=True,
         blank=True
+    )
+
+    # New fields for student review/rating
+    rating = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        help_text="Rating from 1 to 5 stars"
+    )
+    review_comments = models.TextField(
+        null=True,
+        blank=True,
+        help_text="Student's comments on the completed work"
+    )
+
+    requirement_file_1 = models.FileField(
+        upload_to='assignment_requirements/%Y/%m/%d/',
+        null=True,
+        blank=True,
+        verbose_name="Requirement File 1 (Optional)"
+    )
+    requirement_file_2 = models.FileField(
+        upload_to='assignment_requirements/%Y/%m/%d/',
+        null=True,
+        blank=True,
+        verbose_name="Requirement File 2 (Optional)"
     )
 
     def __str__(self):

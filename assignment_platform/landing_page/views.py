@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from .forms import UserRegistrationForm, LoginForm
+from .forms import UserRegistrationForm # LoginForm might be replaced by AuthenticationForm directly in views
+from django.contrib.auth.forms import AuthenticationForm # Standard login form
 from django.contrib import messages
 
 def landing_page_view(request):
@@ -74,3 +75,108 @@ def logout_view(request):
     logout(request)
     messages.info(request, "You have successfully logged out.")
     return redirect('landing_page:landing_page') # Use namespaced URL
+
+# Role-Specific Registration Views
+
+def student_register_view(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.user_type = 'student'
+            user.save()
+            login(request, user)
+            messages.success(request, 'Student account created successfully! Welcome.')
+            return redirect('users:student_dashboard')
+        else:
+            # Pass form with errors to the template
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = UserRegistrationForm()
+
+    context = {
+        'form': form,
+        'form_title': 'Student Registration',
+        'role_description': 'Sign up to post assignments and find expert help.',
+        'login_url_name': 'landing_page:student_login'
+    }
+    return render(request, 'landing_page/register_role.html', context)
+
+def writer_register_view(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.user_type = 'writer'
+            user.save()
+            login(request, user)
+            messages.success(request, 'Writer account created successfully! Welcome.')
+            return redirect('users:writer_dashboard')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = UserRegistrationForm()
+
+    context = {
+        'form': form,
+        'form_title': 'Writer Registration',
+        'role_description': 'Join our team of expert writers and start bidding on assignments.',
+        'login_url_name': 'landing_page:writer_login'
+    }
+    return render(request, 'landing_page/register_role.html', context)
+
+
+# Role-Specific Login Views
+
+def student_login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            if hasattr(user, 'user_type') and user.user_type == 'student':
+                login(request, user)
+                messages.success(request, f'Welcome back, {user.username}!')
+                # Redirect to next page if available, otherwise to student dashboard
+                next_url = request.GET.get('next')
+                return redirect(next_url or 'users:student_dashboard')
+            else:
+                messages.error(request, 'This login portal is for students only. Please use the writer portal if you are a writer, or ensure your account type is correct.')
+        else:
+            messages.error(request, 'Invalid username or password. Please try again.')
+    else:
+        form = AuthenticationForm()
+
+    context = {
+        'form': form,
+        'form_title': 'Student Login',
+        'description': 'Access your dashboard to manage assignments.',
+        'register_url_name': 'landing_page:student_register',
+        'forgot_password_url_name': '#' # Placeholder
+    }
+    return render(request, 'landing_page/login_role.html', context)
+
+def writer_login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            if hasattr(user, 'user_type') and user.user_type == 'writer':
+                login(request, user)
+                messages.success(request, f'Welcome back, {user.username}!')
+                next_url = request.GET.get('next')
+                return redirect(next_url or 'users:writer_dashboard')
+            else:
+                messages.error(request, 'This login portal is for writers only. Please use the student portal if you are a student, or ensure your account type is correct.')
+        else:
+            messages.error(request, 'Invalid username or password. Please try again.')
+    else:
+        form = AuthenticationForm()
+
+    context = {
+        'form': form,
+        'form_title': 'Writer Login',
+        'description': 'Access your dashboard to find assignments and manage your bids.',
+        'register_url_name': 'landing_page:writer_register',
+        'forgot_password_url_name': '#' # Placeholder
+    }
+    return render(request, 'landing_page/login_role.html', context)

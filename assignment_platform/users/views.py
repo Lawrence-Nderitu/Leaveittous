@@ -44,7 +44,46 @@ def writer_dashboard_view(request):
     }
     return render(request, 'users/writer_dashboard.html', context)
 
+from .models import User # Import User model for admin dashboard stats
+from django.db.models import Count, Q # For aggregations if needed, though simple counts are used here
+
 @login_required
 @user_passes_test(is_admin_user)
 def admin_dashboard_view(request):
-    return render(request, 'users/admin_dashboard.html')
+    total_users = User.objects.count()
+    student_count = User.objects.filter(user_type='student').count()
+    writer_count = User.objects.filter(user_type='writer').count()
+    # For admin_user_count, consider if 'admin' user_type is used or just is_staff
+    admin_user_count = User.objects.filter(Q(user_type='admin') | Q(is_staff=True)).distinct().count()
+
+    total_assignments = Assignment.objects.count()
+    open_assignments = Assignment.objects.filter(status='open').count()
+    assigned_assignments = Assignment.objects.filter(status='assigned').count()
+    submitted_assignments = Assignment.objects.filter(status='submitted').count()
+    completed_assignments = Assignment.objects.filter(status='completed').count()
+    cancelled_assignments = Assignment.objects.filter(status='cancelled').count()
+
+    context = {
+        'total_users': total_users,
+        'student_count': student_count,
+        'writer_count': writer_count,
+        'admin_user_count': admin_user_count,
+        'total_assignments': total_assignments,
+        'open_assignments': open_assignments,
+        'assigned_assignments': assigned_assignments,
+        'submitted_assignments': submitted_assignments,
+        'completed_assignments': completed_assignments,
+        'cancelled_assignments': cancelled_assignments,
+        'page_title': 'Admin Dashboard Overview'
+    }
+    return render(request, 'users/admin_dashboard.html', context)
+
+@login_required
+@user_passes_test(is_admin_user) # Re-using is_admin_user for authorization
+def admin_list_users_view(request):
+    users = User.objects.all().order_by('username')
+    context = {
+        'users': users,
+        'page_title': 'Manage Users'
+    }
+    return render(request, 'users/admin_list_users.html', context)

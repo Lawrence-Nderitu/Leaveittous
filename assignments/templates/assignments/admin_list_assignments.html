@@ -1,0 +1,70 @@
+{% extends "landing_page/base.html" %}
+{% block title %}{{ page_title|default:"Manage Assignments" }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-wrap justify-between items-center mb-8 pb-4 border-b border-gray-300">
+        <h1 class="text-3xl font-bold text-gray-800">{{ page_title|default:"Manage Assignments" }}</h1>
+        <a href="{% url 'users:admin_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg inline-flex items-center shadow hover:shadow-md transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+            </svg>
+            Back to Admin Dashboard
+        </a>
+    </div>
+
+    <div class="bg-white shadow-xl rounded-lg overflow-x-auto">
+        <table class="min-w-full">
+            <thead class="bg-gray-100 border-b border-gray-200">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Title</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Student</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Writer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Deadline</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Budget</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Posted</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for assignment in assignments %}
+                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <a href="{% url 'assignments:admin_assignment_detail' assignment_id=assignment.id %}" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">
+                            {{ assignment.title|truncatechars:35 }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ assignment.student.username }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ assignment.writer.username|default:"N/A" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                        {% if assignment.status == 'completed' %}bg-green-100 text-green-800
+                        {% elif assignment.status == 'submitted' %}bg-blue-100 text-blue-800
+                        {% elif assignment.status == 'assigned' %}bg-yellow-100 text-yellow-800
+                        {% elif assignment.status == 'open' %}bg-indigo-100 text-indigo-800
+                        {% elif assignment.status == 'cancelled' %}bg-red-100 text-red-800
+                        {% else %}bg-gray-100 text-gray-800
+                        {% endif %}">
+                            {{ assignment.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ assignment.deadline|date:"Y-m-d" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ assignment.budget }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ assignment.created_at|date:"Y-m-d H:i" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a href="{% url 'admin:assignments_assignment_change' assignment.id %}" class="text-indigo-600 hover:text-indigo-800 hover:underline" target="_blank">Edit</a>
+                        {# Add more actions like view details if a specific admin detail view is created #}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="py-6 px-5 text-center text-gray-500 text-lg">No assignments found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {# Consider adding pagination here for many assignments #}
+</div>
+{% endblock %}
