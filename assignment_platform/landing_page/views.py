@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from .forms import UserRegistrationForm # LoginForm might be replaced by AuthenticationForm directly in views
-from django.contrib.auth.forms import AuthenticationForm # Standard login form
+from .forms import UserRegistrationForm, CustomAuthenticationForm # Use CustomAuthenticationForm
+# from django.contrib.auth.forms import AuthenticationForm # No longer directly needed here
 from django.contrib import messages
 
 def landing_page_view(request):
@@ -130,7 +130,7 @@ def writer_register_view(request):
 
 def student_login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomAuthenticationForm(request, data=request.POST) # Use CustomAuthenticationForm
         if form.is_valid():
             user = form.get_user()
             if hasattr(user, 'user_type') and user.user_type == 'student':
@@ -144,7 +144,7 @@ def student_login_view(request):
         else:
             messages.error(request, 'Invalid username or password. Please try again.')
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm() # Use CustomAuthenticationForm
 
     context = {
         'form': form,
@@ -157,7 +157,7 @@ def student_login_view(request):
 
 def writer_login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomAuthenticationForm(request, data=request.POST) # Use CustomAuthenticationForm
         if form.is_valid():
             user = form.get_user()
             if hasattr(user, 'user_type') and user.user_type == 'writer':
@@ -170,7 +170,7 @@ def writer_login_view(request):
         else:
             messages.error(request, 'Invalid username or password. Please try again.')
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm() # Use CustomAuthenticationForm
 
     context = {
         'form': form,
