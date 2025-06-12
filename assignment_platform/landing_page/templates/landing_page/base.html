@@ -57,10 +57,18 @@
                             <button type="submit" class="text-white hover:bg-emerald-700 px-3 py-2 rounded-md text-sm font-medium">Logout</button>
                         </form>
                     {% else %}
-                        <a href="{% url 'landing_page:student_login' %}" class="text-white hover:bg-emerald-700 px-3 py-2 rounded-md text-sm font-medium">Student Log In</a>
-                        <a href="{% url 'landing_page:student_register' %}" class="bg-white text-emerald-600 hover:bg-gray-100 px-3 py-2 rounded-md text-sm font-medium">Student Sign Up</a>
-                        <a href="{% url 'landing_page:writer_login' %}" class="text-white hover:bg-emerald-700 ml-3 px-3 py-2 rounded-md text-sm font-medium">Writer Log In</a>
-                        <a href="{% url 'landing_page:writer_register' %}" class="bg-gray-200 text-emerald-700 hover:bg-gray-300 ml-2 px-3 py-2 rounded-md text-sm font-medium">Writer Sign Up</a>
+                        <div class="flex items-center space-x-1 text-sm">
+                            <span class="text-emerald-200">Students:</span>
+                            <a href="{% url 'landing_page:student_login' %}" class="text-white hover:text-emerald-100 hover:underline px-2 py-1 rounded-md">Login</a>
+                            <span class="text-emerald-300">/</span>
+                            <a href="{% url 'landing_page:student_register' %}" class="text-white hover:text-emerald-100 hover:underline px-2 py-1 rounded-md">Sign Up</a>
+                        </div>
+                        <div class="flex items-center space-x-1 text-sm ml-3"> {# Added ml-3 for spacing between groups #}
+                            <span class="text-emerald-200">Writers:</span>
+                            <a href="{% url 'landing_page:writer_login' %}" class="text-white hover:text-emerald-100 hover:underline px-2 py-1 rounded-md">Login</a>
+                            <span class="text-emerald-300">/</span>
+                            <a href="{% url 'landing_page:writer_register' %}" class="text-white hover:text-emerald-100 hover:underline px-2 py-1 rounded-md">Sign Up</a>
+                        </div>
                     {% endif %}
                 </div>
             </nav>
