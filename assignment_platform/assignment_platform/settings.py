@@ -33,11 +33,13 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'landing_page',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'landing_page',
+    'users',
+    'assignments',
 ]
 
 MIDDLEWARE = [
@@ -128,4 +130,11 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'landing_page.User'
+AUTH_USER_MODEL = 'users.User'
+
+LOGIN_REDIRECT_URL = '/' # Default redirect after login if not handled by view
+LOGOUT_REDIRECT_URL = '/' # Default redirect after logout
+
+# Media files (uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

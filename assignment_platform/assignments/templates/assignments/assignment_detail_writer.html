@@ -1,0 +1,125 @@
+{% extends "landing_page/base.html" %}
+{% block title %}Assignment Details - {{ assignment.title|truncatechars:30 }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <div class="bg-white shadow-xl rounded-lg p-6 md:p-8">
+        <div class="mb-8 pb-4 border-b border-gray-200">
+            <h1 class="text-3xl md:text-4xl font-bold text-emerald-700 mb-2">{{ assignment.title }}</h1>
+            <p class="text-sm text-gray-500">Posted by: {{ assignment.student.username }} on {{ assignment.created_at|date:"F d, Y" }}</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 mb-8">
+            <div class="md:col-span-2 space-y-4">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3 border-b pb-2">Assignment Information</h2>
+                <div>
+                    <strong class="text-gray-600">Subject:</strong>
+                    <p class="text-gray-800">{{ assignment.subject|default:"N/A" }}</p>
+                </div>
+                <div>
+                    <strong class="text-gray-600">Description:</strong>
+                    <div class="prose max-w-none text-gray-800">{{ assignment.description|linebreaks }}</div>
+                </div>
+            </div>
+            <div class="space-y-4 bg-emerald-50 p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold text-gray-800 mb-3 border-b pb-2">Details</h2>
+                <div>
+                    <strong class="text-gray-600">Deadline:</strong>
+                    <p class="text-gray-800 font-medium">{{ assignment.deadline|date:"F d, Y, H:i" }}</p>
+                </div>
+                <div>
+                    <strong class="text-gray-600">Budget:</strong>
+                    <p class="text-emerald-600 font-bold text-xl">${{ assignment.budget }}</p>
+                </div>
+                <div>
+                    <strong class="text-gray-600">Status:</strong>
+                     <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                        {{ assignment.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 shadow-lg rounded-lg p-6 md:p-8 border border-gray-200">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Place Your Bid</h2>
+
+            {% if messages %}
+                {% for message in messages %}
+                    {# Displaying specific messages related to bidding, others are shown globally via base.html #}
+                    {% if "You have already placed a bid" in message.message %}
+                    <div class="mb-4 p-4 rounded-md
+                                {% if message.tags == 'info' %}bg-blue-100 border-blue-500 text-blue-700
+                                {% elif message.tags == 'success' %}bg-green-100 border-green-500 text-green-700
+                                {% else %}bg-gray-100 border-gray-500 text-gray-700{% endif %}"
+                         role="alert">
+                        <p>{{ message }}</p>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if existing_bid %}
+                <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-4 rounded-md" role="alert">
+                    <p class="font-bold text-lg">Bid Already Placed</p>
+                    <p class="mt-1">You submitted a bid of <span class="font-semibold">${{ existing_bid.amount }}</span> on {{ existing_bid.created_at|date:"F d, Y" }}.</p>
+                    <p class="mt-3"><strong>Your Proposal:</strong></p>
+                    <div class="prose prose-sm max-w-none mt-1">{{ existing_bid.proposal|linebreaks }}</div>
+                    {# Optionally, add a link to edit the bid if that functionality is built #}
+                    {# <a href="#" class="text-blue-600 hover:underline mt-2 inline-block">Edit Your Bid (Coming Soon)</a> #}
+                </div>
+            {% elif bid_form %}
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    {% if bid_form.non_field_errors %}
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md" role="alert">
+                            {% for error in bid_form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div>
+                        <label for="{{ bid_form.amount.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ bid_form.amount.label }}</label>
+                        {{ bid_form.amount }}
+                        {% if bid_form.amount.errors %}<p class="text-red-500 text-xs italic mt-1">{{ bid_form.amount.errors|join:", " }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ bid_form.proposal.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ bid_form.proposal.label }}</label>
+                        {{ bid_form.proposal }}
+                        {% if bid_form.proposal.errors %}<p class="text-red-500 text-xs italic mt-1">{{ bid_form.proposal.errors|join:", " }}</p>{% endif %}
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow hover:shadow-lg transition-transform transform hover:scale-105">
+                        Submit Bid
+                    </button>
+                </form>
+            {% else %}
+                 <p class="text-gray-600 italic text-center">Bidding is currently unavailable for this assignment, or you may have already bid.</p>
+            {% endif %}
+            <!--
+            Example structure for when form is added:
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label for="{{ bid_form.amount.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ bid_form.amount.label }}</label>
+                    {{ bid_form.amount }}
+                    {% if bid_form.amount.errors %}<p class="text-red-500 text-xs">{{ bid_form.amount.errors|join:", "}}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ bid_form.proposal.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ bid_form.proposal.label }}</label>
+                    {{ bid_form.proposal }}
+                    {% if bid_form.proposal.errors %}<p class="text-red-500 text-xs">{{ bid_form.proposal.errors|join:", "}}</p>{% endif %}
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow hover:shadow-lg transition-transform transform hover:scale-105">
+                    Submit Bid
+                </button>
+            </form>
+            -->
+        </div>
+
+        <div class="mt-10 text-center">
+            <a href="{% url 'assignments:browse_open_assignments' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow hover:shadow-lg transition-transform transform hover:scale-105">
+                Back to Open Assignments
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,59 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment Platform - Leave it to Us</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-          theme: {
-            extend: {
-              colors: {
-                clifford: '#da373d', // Example custom color
-              }
-            }
-          }
-        }
-    </script>
-</head>
-<body class="bg-gray-100 text-gray-800">
+{% extends 'landing_page/base.html' %}
 
-    <!-- New Header -->
-    <header class="bg-emerald-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-4">
-            <nav class="flex items-center justify-between">
-                <!-- Logo/Brand Name -->
-                <div class="flex items-center space-x-2">
-                    <span class="text-2xl font-bold">[GCap]</span>
-                    <span class="text-2xl font-bold">Leave it to Us</span>
-                </div>
+{% block title %}Home{% endblock %}
 
-                <!-- Navigation Links (Desktop) -->
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="#" class="hover:text-emerald-200 transition-colors">About Us</a>
-                    <a href="#" class="hover:text-emerald-200 transition-colors">Services</a>
-                    <a href="#" class="hover:text-emerald-200 transition-colors">Our Writers</a>
-                    <a href="#" class="hover:text-emerald-200 transition-colors">Reviews</a>
-                    <a href="#" class="hover:text-emerald-200 transition-colors">Plagiarism Checker</a>
-                </div>
-
-                <!-- Authentication Links -->
-                <div class="flex items-center space-x-4">
-                    {% if user.is_authenticated %}
-                        <span class="text-lg">Hello, {{ user.username }}!</span>
-                        <a href="{% url 'logout' %}" class="py-2 px-4 bg-red-500 hover:bg-red-700 rounded text-white transition-colors">Logout</a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="py-2 px-4 hover:bg-emerald-700 rounded transition-colors">Log In</a>
-                        <a href="{% url 'register' %}" class="bg-white text-emerald-600 hover:bg-gray-100 py-2 px-4 rounded transition-colors">Sign Up</a>
-                    {% endif %}
-                </div>
-            </nav>
-        </div>
-    </header>
-
+{% block content %}
     <!-- Hero Section -->
-    <section class="py-16 px-4 bg-white"> <!-- Added bg-white for contrast with body -->
+    <section class="py-16 px-4 bg-white">
         <div class="container mx-auto">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Text Content Area -->
@@ -66,27 +17,27 @@
                     <!-- Features Grid -->
                     <div class="grid grid-cols-2 gap-6">
                         <div class="flex items-center space-x-3">
-                            <span class="text-emerald-500">[Chk]</span> <!-- Placeholder for CheckCircle icon -->
+                            <span class="text-emerald-500">[Chk]</span>
                             <span class="text-gray-700">Original Content</span>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <span class="text-emerald-500">[Shd]</span> <!-- Placeholder for ShieldCheck icon -->
+                            <span class="text-emerald-500">[Shd]</span>
                             <span class="text-gray-700">Plagiarism Free</span>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <span class="text-emerald-500">[Usr]</span> <!-- Placeholder for Users icon -->
+                            <span class="text-emerald-500">[Usr]</span>
                             <span class="text-gray-700">Expert Writers</span>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <span class="text-emerald-500">[Clk]</span> <!-- Placeholder for Clock icon -->
+                            <span class="text-emerald-500">[Clk]</span>
                             <span class="text-gray-700">24/7 Support</span>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <span class="text-emerald-500">[Dlr]</span> <!-- Placeholder for DollarSign icon -->
+                            <span class="text-emerald-500">[Dlr]</span>
                             <span class="text-gray-700">Money Back Guarantee</span>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <span class="text-emerald-500">[Msg]</span> <!-- Placeholder for MessageSquare icon -->
+                            <span class="text-emerald-500">[Msg]</span>
                             <span class="text-gray-700">Direct Communication</span>
                         </div>
                     </div>
@@ -95,13 +46,11 @@
                     <div class="flex items-center space-x-6 pt-4">
                         <div class="flex items-center space-x-2">
                             <span class="font-semibold text-gray-800">4.8</span>
-                            <!-- Placeholder for stars -->
                             <span class="text-yellow-400">[Str][Str][Str][Str][Hlf]</span>
                             <span class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-sm">Trustpilot</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <span class="font-semibold text-gray-800">4.7</span>
-                            <!-- Placeholder for stars -->
                             <span class="text-yellow-400">[Str][Str][Str][Str][Hlf]</span>
                             <span class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-sm">Reviews.io</span>
                         </div>
@@ -175,12 +124,12 @@
                             </div>
 
                             <button type="submit" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-lg py-3 px-4 rounded-md flex items-center justify-center space-x-2">
-                                <span class="font-bold">[Awd]</span> <!-- Placeholder for Award icon -->
+                                <span class="font-bold">[Awd]</span>
                                 <span>Get Expert Help Now</span>
                             </button>
 
                             <div class="mt-4 text-center text-sm text-gray-600 flex items-center justify-center space-x-1">
-                                <span class="text-emerald-500">[Chk]</span> <!-- Placeholder for CheckCircle icon -->
+                                <span class="text-emerald-500">[Chk]</span>
                                 <span>Top writers are ready to help you now</span>
                             </div>
                         </form>
@@ -198,33 +147,29 @@
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">We work with alumni from the world's top universities and colleges. Each writer is carefully vetted for academic excellence and professional expertise.</p>
             </div>
 
-            <!-- Feature Cards Grid -->
             <div class="grid md:grid-cols-3 gap-8 mb-12">
-                <!-- Card 1: PhD Qualified -->
                 <div class="text-center border border-gray-200 rounded-lg shadow-lg">
                     <div class="p-6">
                         <div class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-3xl text-emerald-600">[GCap]</span> <!-- Placeholder for GraduationCap -->
+                            <span class="text-3xl text-emerald-600">[GCap]</span>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800">PhD Qualified</h3>
                         <p class="text-gray-600">85% of our writers hold PhD degrees from renowned institutions, ensuring top-tier expertise in their respective fields.</p>
                     </div>
                 </div>
-                <!-- Card 2: Subject Experts -->
                 <div class="text-center border border-gray-200 rounded-lg shadow-lg">
                     <div class="p-6">
                         <div class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-3xl text-emerald-600">[FTxt]</span> <!-- Placeholder for FileText -->
+                            <span class="text-3xl text-emerald-600">[FTxt]</span>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800">Subject Experts</h3>
                         <p class="text-gray-600">Our team covers a vast array of subjects, from humanities to STEM, providing specialized knowledge for any assignment.</p>
                     </div>
                 </div>
-                <!-- Card 3: Proven Track Record -->
                 <div class="text-center border border-gray-200 rounded-lg shadow-lg">
                     <div class="p-6">
                         <div class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-3xl text-emerald-600">[Awd]</span> <!-- Placeholder for Award -->
+                            <span class="text-3xl text-emerald-600">[Awd]</span>
                         </div>
                         <h3 class="text-xl font-semibold mb-2 text-gray-800">Proven Track Record</h3>
                         <p class="text-gray-600">With years of experience and countless successful projects, our writers consistently deliver high-quality, original work.</p>
@@ -232,7 +177,6 @@
                 </div>
             </div>
 
-            <!-- University Logos Placeholder -->
             <div class="text-center">
                 <p class="text-gray-600 mb-6 text-lg">Our writers graduated from:</p>
                 <div class="flex flex-wrap justify-center items-center space-x-4 md:space-x-8 opacity-70">
@@ -245,77 +189,4 @@
             </div>
         </div>
     </section>
-
-    <!-- Any remaining messages should be displayed. This could be moved to a more global position or handled differently. -->
-    {% if messages %}
-    <div class="container mx-auto px-4 mt-8">
-        {% for message in messages %}
-            <div class="p-4 rounded
-                        {% if message.tags == 'success' %}bg-green-100 border border-green-400 text-green-700
-                        {% elif message.tags == 'info' %}bg-blue-100 border border-blue-400 text-blue-700
-                        {% elif message.tags == 'warning' %}bg-yellow-100 border border-yellow-400 text-yellow-700
-                        {% elif message.tags == 'error' %}bg-red-100 border border-red-400 text-red-700
-                        {% endif %}" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-4 gap-8">
-                <!-- Column 1: Brand/Logo & Description -->
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <span class="text-emerald-500 text-3xl">[GCap]</span> <!-- Placeholder for GraduationCap, increased size -->
-                        <span class="text-2xl font-bold">AcademicPro</span>
-                    </div>
-                    <p class="text-gray-400 text-sm">Your trusted partner for academic success. We provide high-quality writing services tailored to your needs, ensuring you achieve your educational goals with confidence.</p>
-                </div>
-
-                <!-- Column 2: Services Links -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Services</h3>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Essay Writing</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Research Papers</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Dissertations</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Case Studies</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Homework Help</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 3: Support Links -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Support</h3>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Live Chat</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Our Guarantees</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Revision Policy</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 4: Company Links -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Company</h3>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
-                <p>&copy; {% now "Y" %} AcademicPro. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-</body>
-</html>
+{% endblock %}

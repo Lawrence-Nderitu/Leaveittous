@@ -1,0 +1,39 @@
+{% extends 'landing_page/base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <div class="bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold text-red-700 mb-6">Admin Dashboard</h1>
+        <p class="text-lg text-gray-700">Welcome, <span class="font-semibold">{{ user.username }}</span> (Administrator)!</p>
+        <p class="text-gray-600 mt-2">Platform overview and management tools.</p>
+
+        <div class="mt-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Management Areas</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a href="{% url 'admin:index' %}" class="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-3 px-4 rounded-lg shadow hover:shadow-lg transition-transform transform hover:scale-105 text-center" target="_blank">
+                    Django Admin Interface
+                </a>
+                <a href="#" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-lg shadow hover:shadow-lg transition-transform transform hover:scale-105 text-center">
+                    Manage Users
+                </a>
+                <a href="#" class="bg-green-700 hover:bg-green-800 text-white font-semibold py-3 px-4 rounded-lg shadow hover:shadow-lg transition-transform transform hover:scale-105 text-center">
+                    Manage Assignments
+                </a>
+                <a href="#" class="bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 px-4 rounded-lg shadow hover:shadow-lg transition-transform transform hover:scale-105 text-center">
+                    Platform Settings
+                </a>
+                <a href="#" class="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-3 px-4 rounded-lg shadow hover:shadow-lg transition-transform transform hover:scale-105 text-center">
+                    View Reports
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-10">
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Platform Statistics</h3>
+            <p class="text-gray-500">Statistics will be displayed here.</p>
+            <!-- Placeholder for stats -->
+        </div>
+    </div>
+</div>
+{% endblock %}

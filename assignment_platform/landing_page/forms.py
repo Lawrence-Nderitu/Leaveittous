@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User
+from users.models import User # Updated import path
 
 class UserRegistrationForm(UserCreationForm):
     USER_TYPE_CHOICES = [

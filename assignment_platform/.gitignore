@@ -11,6 +11,12 @@ venv/
 *.log
 db.sqlite3
 db.sqlite3-journal # typically created by WAL mode
+media/ # User-uploaded files
+
+# Environment variables / Secrets
+.env
+*.local
+local_settings.py
 
 # Node.js
 node_modules/
