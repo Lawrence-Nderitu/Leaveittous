@@ -49,8 +49,8 @@ class Assignment(models.Model):
     # New fields for submission
     submitted_work = models.FileField(
         upload_to='submissions/%Y/%m/%d/',
-        null=True,
-        blank=True
+        null=True,  # Reverted to True to avoid interactive prompt
+        blank=False # This makes it required in forms
     )
     submission_notes = models.TextField(
         null=True,

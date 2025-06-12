@@ -67,3 +67,20 @@ class AssignmentSubmissionForm(forms.ModelForm):
             'submitted_work': 'Upload Your Completed Work',
             'submission_notes': 'Submission Notes (Optional)',
         }
+
+    def clean_submitted_work(self):
+        submitted_file = self.cleaned_data.get('submitted_work', None)
+        if submitted_file:
+            # Max file size: 100MB
+            max_size = 100 * 1024 * 1024
+            if submitted_file.size > max_size:
+                # Convert max_size to MB for the error message
+                max_size_mb = max_size / (1024 * 1024)
+                raise forms.ValidationError(f"The uploaded file is too large. Please upload a file smaller than {max_size_mb:.0f}MB.")
+        # If the field is required (blank=False on model), Django's default validation
+        # for required fields will handle the case where submitted_file is None.
+        # If blank=True was on the model and you wanted to make it conditionally required here,
+        # you might add:
+        # else:
+        #     raise forms.ValidationError("This field is required.")
+        return submitted_file

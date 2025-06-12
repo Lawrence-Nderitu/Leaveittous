@@ -74,12 +74,14 @@ def browse_open_assignments_view(request):
 @login_required
 @user_passes_test(is_writer_user, login_url='/users/login/')
 def assignment_detail_writer_view(request, assignment_id):
-    assignment = get_object_or_404(Assignment, id=assignment_id, status='open')
-    existing_bid = Bid.objects.filter(assignment=assignment, writer=request.user).first()
-    bid_form = None
+    assignment = get_object_or_404(Assignment.objects.select_related('student'), id=assignment_id) # Removed status='open'
 
-    if not existing_bid: # Only process form if no existing bid
-        if request.method == 'POST':
+    bid_form = None
+    existing_bid = None
+
+    if assignment.status == 'open':
+        existing_bid = Bid.objects.filter(assignment=assignment, writer=request.user).first()
+        if not existing_bid and request.method == 'POST':
             bid_form = BidForm(request.POST)
             if bid_form.is_valid():
                 bid = bid_form.save(commit=False)
@@ -88,16 +90,16 @@ def assignment_detail_writer_view(request, assignment_id):
                 bid.save()
                 messages.success(request, 'Your bid has been placed successfully!')
                 return redirect('assignments:browse_open_assignments')
-        else:
+        elif not existing_bid: # GET request, no existing bid, and assignment is open
             bid_form = BidForm()
-    elif existing_bid: # If bid exists, inform user
-        messages.info(request, "You have already placed a bid on this assignment. You can update it from your dashboard (feature coming soon).")
-        # Not passing bid_form to context if bid exists, so form won't render
+        # If existing_bid (and assignment is open), bid_form remains None, existing_bid is shown in template
+        # If assignment is not open, bid_form and existing_bid remain None, template shows bidding closed
 
     context = {
         'assignment': assignment,
-        'bid_form': bid_form, # Will be None if bid exists or if not POST/GET
+        'bid_form': bid_form,
         'existing_bid': existing_bid,
+        'page_title': f"Assignment: {assignment.title[:30]}..." if len(assignment.title) > 33 else f"Assignment: {assignment.title}"
     }
     return render(request, 'assignments/assignment_detail_writer.html', context)
 
