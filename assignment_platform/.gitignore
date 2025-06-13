@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal # typically created by WAL mode
+media/ # User-uploaded files
+
+# Environment variables / Secrets
+.env
+*.local
+local_settings.py
+
+# Node.js
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Tailwind CSS / Build artifacts
+landing_page/static/landing_page/dist/ # Output directory for Tailwind
+staticfiles/ # if you run collectstatic and don't want to commit the result
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
