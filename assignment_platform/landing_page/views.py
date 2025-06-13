@@ -131,19 +131,40 @@ def writer_register_view(request):
 
 def student_login_view(request):
     if request.method == 'POST':
-        form = CustomAuthenticationForm(request, data=request.POST) # Use CustomAuthenticationForm
+        form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            user = form.get_user()
-            if hasattr(user, 'user_type') and user.user_type == 'student':
-                login(request, user)
+            user = form.get_user() # User is active here due to AuthenticationForm
+            login(request, user) # Log in the user first
+
+            # Redirect logic
+            if user.is_superuser or user.is_staff: # Prioritize admin/staff
+                messages.success(request, f'Welcome Admin, {user.username}!')
+                return redirect('users:admin_dashboard')
+            elif hasattr(user, 'user_type') and user.user_type == 'student':
                 messages.success(request, f'Welcome back, {user.username}!')
-                # Redirect to next page if available, otherwise to student dashboard
                 next_url = request.GET.get('next')
                 return redirect(next_url or 'users:student_dashboard')
             else:
-                messages.error(request, 'This login portal is for students only. Please use the writer portal if you are a writer, or ensure your account type is correct.')
-        else:
-            messages.error(request, 'Invalid username or password. Please try again.')
+                # Log out user if they were logged in but don't match any role for this portal
+                logout(request)
+                messages.error(request, 'This login portal is for students. Your account type is not student.')
+                # Form remains the same, context will re-render it.
+        else: # Form is not valid (e.g. wrong password, or user is inactive)
+            username = request.POST.get('username')
+            from users.models import User # Import User model
+            try:
+                user_check = User.objects.get(username=username)
+                if not user_check.is_active and hasattr(user_check, 'user_type') and user_check.user_type == 'student':
+                    messages.error(request, 'Your student account is awaiting activation or has been deactivated.')
+                # For other cases, the form's default error messages are usually sufficient,
+                # or a generic one can be added.
+                # else:
+                #     messages.error(request, 'Invalid username or password, or your account may be inactive/disabled for this portal.')
+            except User.DoesNotExist:
+                pass # Form.is_valid() already handled this by "Invalid username or password"
+            # If form is invalid, it will re-render with its own errors. Add a general one if desired.
+            if not form.errors: # If Django's AuthenticationForm didn't add specific errors (e.g. inactive user)
+                 messages.error(request, 'Invalid username or password. Please try again or check if your account is active.')
     else:
         form = CustomAuthenticationForm() # Use CustomAuthenticationForm
 
@@ -158,28 +179,34 @@ def student_login_view(request):
 
 def writer_login_view(request):
     if request.method == 'POST':
-        form = CustomAuthenticationForm(request, data=request.POST) # Use CustomAuthenticationForm
+        form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            user = form.get_user()
-            if hasattr(user, 'user_type') and user.user_type == 'writer': # user is guaranteed active here by AuthenticationForm
-                login(request, user)
+            user = form.get_user() # User is active here
+            login(request, user) # Log in the user first
+
+            if user.is_superuser or user.is_staff: # Prioritize admin/staff
+                messages.success(request, f'Welcome Admin, {user.username}!')
+                return redirect('users:admin_dashboard')
+            elif hasattr(user, 'user_type') and user.user_type == 'writer':
                 messages.success(request, f'Welcome back, {user.username}!')
                 next_url = request.GET.get('next')
                 return redirect(next_url or 'users:writer_dashboard')
-            else: # User is active, but not a writer
-                messages.error(request, 'This login portal is for writers only. Please use the student portal if you are a student, or ensure your account type is correct.')
-        else: # Form is not valid (e.g. wrong password, or user is inactive)
+            else:
+                logout(request) # Log out if wrong role for this portal
+                messages.error(request, 'This login portal is for writers. Your account type is not writer.')
+        else: # Form is not valid
             username = request.POST.get('username')
-            # Need to import User from users.models to perform this check
-            from users.models import User
+            from users.models import User # Import User model
             try:
                 user_check = User.objects.get(username=username)
-                if user_check.user_type == 'writer' and not user_check.is_active:
+                if hasattr(user_check, 'user_type') and user_check.user_type == 'writer' and not user_check.is_active:
                     messages.error(request, 'Your writer account is awaiting admin approval and activation.')
-                else: # Other reasons for form invalidity (e.g. wrong password for an active writer)
-                    messages.error(request, 'Invalid username or password. Please try again.')
-            except User.DoesNotExist: # Username itself does not exist
-                messages.error(request, 'Invalid username or password. Please try again.')
+                # else:
+                #     messages.error(request, 'Invalid username or password, or your account may be inactive/disabled for this portal.')
+            except User.DoesNotExist:
+                pass # Form.is_valid() already handled this
+            if not form.errors: # If Django's AuthenticationForm didn't add specific errors
+                 messages.error(request, 'Invalid username or password. Please try again or check if your account is active.')
     else:
         form = CustomAuthenticationForm() # Use CustomAuthenticationForm
 
