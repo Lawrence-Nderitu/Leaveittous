@@ -4,7 +4,10 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-gray-300">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 break-all" title="{{ assignment.title }}">{{ page_title }}</h1>
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 break-all" title="{{ assignment.title }}">{{ page_title }}</h1>
+            <p class="text-sm text-gray-500 mt-1">Assignment ID: {{ assignment.id }}</p>
+        </div>
         <div class="mt-2 md:mt-0">
             <a href="{% url 'assignments:admin_list_assignments' %}" class="text-blue-600 hover:text-blue-800 text-sm mr-4 inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
@@ -36,11 +39,11 @@
             </div>
             <div>
                 <h3 class="text-sm font-medium text-gray-500">Student</h3>
-                <p class="mt-1 text-md text-gray-900">{{ assignment.student.username }} ({{ assignment.student.email }})</p>
+                <p class="mt-1 text-md text-gray-900">{{ assignment.student.username }} (ID: {{ assignment.student.id }}, {{ assignment.student.email }})</p>
             </div>
             <div>
                 <h3 class="text-sm font-medium text-gray-500">Assigned Writer</h3>
-                <p class="mt-1 text-md text-gray-900">{{ assignment.writer.username|default:"N/A" }} {% if assignment.writer %}({{ assignment.writer.email }}){% endif %}</p>
+                <p class="mt-1 text-md text-gray-900">{{ assignment.writer.username|default:"N/A" }} {% if assignment.writer %}(ID: {{ assignment.writer.id }}, {{ assignment.writer.email }}){% endif %}</p>
             </div>
             <div>
                 <h3 class="text-sm font-medium text-gray-500">Deadline</h3>
@@ -133,9 +136,10 @@
                 {% for bid in bids %}
                 <div class="border rounded-md p-4 {% if bid.status == 'accepted' %}bg-green-50 border-green-200{% elif bid.status == 'rejected' %}bg-red-50 border-red-200{% else %}bg-gray-50 border-gray-200{% endif %}">
                     <div class="flex justify-between items-start">
-                        <h3 class="font-semibold text-md">Bid by: <span class="text-blue-600">{{ bid.writer.username }}</span></h3>
+                        <h3 class="font-semibold text-md">Bid by: <span class="text-blue-600">{{ bid.writer.username }}</span> (Writer ID: {{ bid.writer.id }})</h3>
                         <p class="text-lg font-bold text-emerald-600">${{ bid.amount }}</p>
                     </div>
+                    <p class="text-xs text-gray-500">Bid ID: {{ bid.id }}</p>
                     <p class="text-xs text-gray-500 mb-1">Placed on: {{ bid.created_at|date:"Y-m-d H:i" }}</p>
                     <p class="text-sm text-gray-600">Status:
                         <span class="font-medium

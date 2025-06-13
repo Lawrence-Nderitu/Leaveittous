@@ -96,6 +96,20 @@ class Assignment(models.Model):
         # Defaulting to the student's detail view as they are the owner.
         return reverse('assignments:assignment_detail_student', kwargs={'assignment_id': self.pk})
 
+    @property
+    def writer_viewable_budget(self):
+        if self.budget is not None:
+            # budget is a DecimalField, so this calculation will maintain precision.
+            return self.budget * 0.30
+        return None
+
+    @property
+    def formatted_writer_viewable_budget(self):
+        viewable_budget = self.writer_viewable_budget
+        if viewable_budget is not None:
+            return "{:.2f}".format(viewable_budget)
+        return "N/A"
+
 class Bid(models.Model):
     # Ensure Assignment model is defined before Bid, or use string reference if necessary.
     # Here, it's defined above, so direct reference is fine.
