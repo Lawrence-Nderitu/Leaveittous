@@ -108,10 +108,11 @@ def writer_register_view(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.user_type = 'writer'
+            user.is_active = False  # Set new writers to inactive by default
             user.save()
-            login(request, user)
-            messages.success(request, 'Writer account created successfully! Welcome.')
-            return redirect('users:writer_dashboard')
+            # Do not log in the user automatically
+            messages.success(request, 'Writer account created successfully! It is now awaiting admin approval and activation.')
+            return redirect('landing_page:landing_page') # Redirect to home page
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -120,7 +121,7 @@ def writer_register_view(request):
     context = {
         'form': form,
         'form_title': 'Writer Registration',
-        'role_description': 'Join our team of expert writers and start bidding on assignments.',
+        'role_description': 'Join our team of expert writers. Your account will be activated after admin review.', # Updated description
         'login_url_name': 'landing_page:writer_login'
     }
     return render(request, 'landing_page/register_role.html', context)
@@ -160,15 +161,25 @@ def writer_login_view(request):
         form = CustomAuthenticationForm(request, data=request.POST) # Use CustomAuthenticationForm
         if form.is_valid():
             user = form.get_user()
-            if hasattr(user, 'user_type') and user.user_type == 'writer':
+            if hasattr(user, 'user_type') and user.user_type == 'writer': # user is guaranteed active here by AuthenticationForm
                 login(request, user)
                 messages.success(request, f'Welcome back, {user.username}!')
                 next_url = request.GET.get('next')
                 return redirect(next_url or 'users:writer_dashboard')
-            else:
+            else: # User is active, but not a writer
                 messages.error(request, 'This login portal is for writers only. Please use the student portal if you are a student, or ensure your account type is correct.')
-        else:
-            messages.error(request, 'Invalid username or password. Please try again.')
+        else: # Form is not valid (e.g. wrong password, or user is inactive)
+            username = request.POST.get('username')
+            # Need to import User from users.models to perform this check
+            from users.models import User
+            try:
+                user_check = User.objects.get(username=username)
+                if user_check.user_type == 'writer' and not user_check.is_active:
+                    messages.error(request, 'Your writer account is awaiting admin approval and activation.')
+                else: # Other reasons for form invalidity (e.g. wrong password for an active writer)
+                    messages.error(request, 'Invalid username or password. Please try again.')
+            except User.DoesNotExist: # Username itself does not exist
+                messages.error(request, 'Invalid username or password. Please try again.')
     else:
         form = CustomAuthenticationForm() # Use CustomAuthenticationForm
 

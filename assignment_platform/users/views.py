@@ -87,3 +87,25 @@ def admin_list_users_view(request):
         'page_title': 'Manage Users'
     }
     return render(request, 'users/admin_list_users.html', context)
+
+from django.shortcuts import redirect, get_object_or_404 # Ensure these are available for the new view
+from django.contrib import messages # Ensure messages is available
+from django.views.decorators.http import require_POST # For POST-only actions
+
+@require_POST
+@login_required
+@user_passes_test(is_admin_user)
+def toggle_user_activation_view(request, user_id):
+    user_to_toggle = get_object_or_404(User, id=user_id)
+
+    if user_to_toggle == request.user:
+        messages.error(request, "You cannot deactivate your own account.")
+        return redirect('users:admin_list_users')
+
+    user_to_toggle.is_active = not user_to_toggle.is_active
+    user_to_toggle.save()
+
+    action = "activated" if user_to_toggle.is_active else "deactivated"
+    messages.success(request, f"User '{user_to_toggle.username}' has been {action}.")
+
+    return redirect('users:admin_list_users')
