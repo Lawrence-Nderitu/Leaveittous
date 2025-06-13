@@ -10,6 +10,7 @@ urlpatterns = [
     path('bid/<int:bid_id>/award/', views.award_assignment_view, name='award_assignment'),
     path('<int:assignment_id>/submit/', views.submit_assignment_view, name='submit_assignment'),
     path('<int:assignment_id>/complete/', views.mark_assignment_complete_view, name='mark_assignment_complete'),
+    path('<int:assignment_id>/cancel/', views.cancel_assignment_view, name='cancel_assignment'),
     path('admin/list/', views.admin_list_assignments_view, name='admin_list_assignments'),
     path('admin/assignments/<int:assignment_id>/detail/', views.admin_assignment_detail_view, name='admin_assignment_detail'),
 ]

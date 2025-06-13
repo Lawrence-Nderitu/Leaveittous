@@ -6,7 +6,7 @@ class AssignmentCreateForm(forms.ModelForm):
         model = Assignment
         fields = [
             'title', 'description', 'subject', 'deadline', 'budget',
-            'requirement_file_1', 'requirement_file_2' # Add new fields
+            'requirement_file_1', 'requirement_file_2', 'requirement_file_3' # Add new fields
         ]
         widgets = {
             'deadline': forms.DateInput(
@@ -39,6 +39,7 @@ class AssignmentCreateForm(forms.ModelForm):
             # Add widgets for the new file fields
             'requirement_file_1': forms.ClearableFileInput(attrs={'class': 'mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100'}),
             'requirement_file_2': forms.ClearableFileInput(attrs={'class': 'mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100'}),
+            'requirement_file_3': forms.ClearableFileInput(attrs={'class': 'mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100'}),
         }
         # Optional: Add labels if you want to customize them from the model's verbose_name
         # labels = {

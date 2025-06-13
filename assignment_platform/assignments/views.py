@@ -197,6 +197,33 @@ def mark_assignment_complete_view(request, assignment_id):
         messages.info(request, "Please use the button on the assignment detail page to mark it as complete.")
         return redirect('assignments:assignment_detail_student', assignment_id=assignment.id)
 
+@login_required
+@user_passes_test(is_student_user, login_url='/users/login/')
+def cancel_assignment_view(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+
+    # Check if the logged-in user is the student who created the assignment
+    if assignment.student != request.user:
+        messages.error(request, "You are not authorized to cancel this assignment.")
+        return redirect('users:student_dashboard')
+
+    # Check if the assignment status allows cancellation
+    if assignment.status in ['open', 'assigned']:
+        if request.method == 'POST':
+            assignment.status = 'cancelled_by_student'
+            assignment.save()
+            messages.success(request, f"Assignment '{assignment.title}' has been cancelled.")
+            return redirect('users:student_dashboard')
+        else: # GET request
+            messages.info(request, "To cancel this assignment, please confirm by using the cancel button on the assignment page (this typically requires a POST request).")
+            return redirect('users:student_dashboard') # Or redirect to assignment detail page
+    else:
+        messages.error(request, "This assignment cannot be cancelled at its current stage.")
+        return redirect('users:student_dashboard')
+
+    # Default redirect if other conditions are not met (though logic above should cover most cases)
+    return redirect('users:student_dashboard')
+
 # Admin views for assignments
 @login_required
 @user_passes_test(lambda u: u.is_staff or (hasattr(u, 'user_type') and u.user_type == 'admin'))

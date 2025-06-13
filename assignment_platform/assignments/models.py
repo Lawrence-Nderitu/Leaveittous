@@ -39,6 +39,7 @@ class Assignment(models.Model):
         ('submitted', 'Submitted for Review'), # New
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
+        ('cancelled_by_student', 'Cancelled by Student'),
     ]
     status = models.CharField(
         max_length=25, # Increased length for 'Submitted for Review'
@@ -85,6 +86,12 @@ class Assignment(models.Model):
         null=True,
         blank=True,
         verbose_name="Requirement File 2 (Optional)"
+    )
+    requirement_file_3 = models.FileField(
+        upload_to='assignment_requirements/%Y/%m/%d/',
+        null=True,
+        blank=True,
+        verbose_name="Requirement File 3 (Optional)"
     )
 
     def __str__(self):
